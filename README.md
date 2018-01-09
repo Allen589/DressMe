@@ -1,6 +1,6 @@
 # DressMe Desktop App
 
-This is a cross platform desktop application built on electron
+This is a cross platform desktop application built on Electron
 
 ### Version
 1.0.0
