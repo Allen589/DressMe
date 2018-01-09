@@ -32,11 +32,11 @@ app.on('ready', function(){
 });
 
 // Handle add item window
-function createAddWindow(){
+function createAddWindow() {
   addWindow = new BrowserWindow({
     width: 300,
-    height:200,
-    title:'Add Shopping List Item'
+    height: 200,
+    title:'Add Clothing Item'
   });
   addWindow.loadURL(url.format({
     pathname: path.join(__dirname, 'addWindow.html'),
@@ -49,12 +49,33 @@ function createAddWindow(){
   });
 }
 
+function getOutfit() {
+  randomWindow = new BrowserWindow({
+    width: 300,
+    height: 200,
+    title: 'Get Outfit'
+  });
+  randomWindow.loadURL(url.format({
+    pathname: path.join(__dirname, 'randomWindow.html'),
+    protocol: 'file:',
+    slashes:true
+  }));
+  randomWindow.on('close', function() {
+    randomWindow = null;
+  });
+}
+
+// Catch item:random
+ipcMain.on('item:random', function(e, item){
+  mainWindow.webContents.send('item:random', item);
+});
+
 // Catch item:add
 ipcMain.on('item:add', function(e, item){
   mainWindow.webContents.send('item:add', item);
-  addWindow.close(); 
+  addWindow.close();
   // Still have a reference to addWindow in memory. Need to reclaim memory (Grabage collection)
-  //addWindow = null;
+  addWindow = null;
 });
 
 // Create menu template
@@ -80,6 +101,17 @@ const mainMenuTemplate =  [
         accelerator:process.platform == 'darwin' ? 'Command+Q' : 'Ctrl+Q',
         click(){
           app.quit();
+        }
+      }
+    ]
+  },
+  {
+    label: 'Outfit',
+    submenu:[
+      {
+        label:'Randomize!',
+        click() {
+          getOutfit();
         }
       }
     ]
